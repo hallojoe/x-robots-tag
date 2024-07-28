@@ -1,0 +1,33 @@
+{
+  "name": "@casko/x-robots-tag",
+  "version": "0.0.1",
+  "description": "X-Robots-Tag reader.",
+  "main": "index.js",
+  "files": ["index.js", "index.d.ts"],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [
+    "robots",
+    "x-robots-tag",
+    "x-robots-tag reader",
+    "x-robots-tag parser"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hallojoe/x-robots-tag.git"
+  },
+  "author": "casper korsgaard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hallojoe/x-robots-tag/issues"
+  },
+  "homepage": "https://github.com/hallojoe/x-robots-tag#readme",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2"
+  }
+}

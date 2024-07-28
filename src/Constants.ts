@@ -1,0 +1,1 @@
+export const XRobotsTagHeaderName: string = "X-Robots-Tag"
