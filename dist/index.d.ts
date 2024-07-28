@@ -1,5 +1,5 @@
 import { DuplicateKeyOptions, StringFormatOptions } from "./Enums";
-import { XRobotsTagValue } from "./Types";
+import { XRobotsTagUserAgentValue, XRobotsTagValue } from "./Types";
 export declare class XRobotsTag {
     private _value;
     private _duplicateKeyOptions;
@@ -7,7 +7,14 @@ export declare class XRobotsTag {
     constructor(text: string, duplicateKeyOptions?: DuplicateKeyOptions, stringFormatOptions?: StringFormatOptions);
     get value(): XRobotsTagValue;
     toString(): string;
-    private mapValue;
-    private mapStringValues;
     private map;
+}
+export declare class XRobotsTagUserAgent {
+    private _key;
+    private _value;
+    constructor(value: string);
+    private map;
+    get key(): string;
+    get value(): XRobotsTagUserAgentValue;
+    toString(): string;
 }

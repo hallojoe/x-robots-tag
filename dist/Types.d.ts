@@ -3,6 +3,6 @@ export type XRobotsTagValue = {
         [key: string]: string;
     };
 };
-export type XRobotsTagStringValue = {
+export type XRobotsTagUserAgentValue = {
     [key: string]: string;
 };

@@ -20,18 +20,6 @@ export function getUserAgentNames(formatedText:string):string[] {
   return ["", ...userAgentNames]
 }
 
-export function getUserAgentValues(formatedText:string, userAgentNames:string[]):string[] {              
-  return userAgentNames.length === 1 
-    ? [formatedText] 
-    : splitAt(formatedText, userAgentNames) 
-}
-
-export function getDirectiveKeyValue(directiveText:string): [string, string] {
-  const separatorIndex = directiveText.indexOf(":")
-  const directiveKey = separatorIndex > -1 ? directiveText.substring(0, separatorIndex) : directiveText
-  const directiveValue = separatorIndex > -1 ? directiveText.substring(separatorIndex + 1).trim() : ""
-  return [directiveKey, directiveValue]
-}
 
 export function splitAt(value: string, separators: string[]): string[] {
   const splitExpression = new RegExp(`(?=${separators.filter(separator => separator !== "").join("|")})`, "g")

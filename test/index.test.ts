@@ -1,6 +1,6 @@
-import { XRobotsTag } from "../src"
+import { XRobotsTag, XRobotsTagUserAgent } from "../src"
 
-type Expectation = { userAgent: string, directives: { [key:string]: string | boolean | undefined } }
+type XRobotsTagExpectation = { userAgent: string, directives: { [key:string]: string | boolean | undefined } }
 
 describe.each([
   {
@@ -38,7 +38,7 @@ X-Robots-Tag: googlebot: noindex
     ]
   }
 
-].map(test => { return { name: test.name, input: test.input, expectations: test.expectations.map(expectation => expectation as Expectation) }})
+].map(test => { return { name: test.name, input: test.input, expectations: test.expectations.map(expectation => expectation as XRobotsTagExpectation) }})
 
 )("test x-robots-tag-header from $name", ({ input, expectations }) => {
 
@@ -65,5 +65,39 @@ X-Robots-Tag: googlebot: noindex
     }
  
   )
+
+})
+
+
+describe.each([
+  {
+    name: "XRobotsTagUserAgent without user agent",
+    input: "noindex,    nofollow",
+    expectation: { userAgent: "", directives: { "noindex": true, "nofollow": true } }    
+  },
+  {
+    name: "XRobotsTagUserAgent with user agent",
+    input: "googlebot: noindex, unavailable_after: 25 jun 2010 15:00:00 pst",
+    expectation: { userAgent: "googlebot", directives: { "noindex": true, "unavailable_after": "25 jun 2010 15:00:00 pst" } },
+  }    
+].map(test => { return { name: test.name, input: test.input, expectation: test.expectation as XRobotsTagExpectation }})
+
+)("test: $name", ({ input, expectation }) => {
+
+  let xRobotsTagUserAgent = new XRobotsTagUserAgent(input)
+
+  it("test expected user agent and directives are present", () => {
+
+    const { userAgent, directives } = expectation
+
+    expect(userAgent === xRobotsTagUserAgent.key).toBe(true)
+
+    for(const directiveKey in directives) {
+
+      expect(directiveKey in xRobotsTagUserAgent.value).toBe(true)
+
+    }
+
+  })
 
 })

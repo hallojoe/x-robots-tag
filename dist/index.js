@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.XRobotsTag = void 0;
+exports.XRobotsTagUserAgent = exports.XRobotsTag = void 0;
+const Constants_1 = require("./Constants");
 const Enums_1 = require("./Enums");
 const Text_1 = require("./Text");
 class XRobotsTag {
@@ -25,54 +26,68 @@ class XRobotsTag {
         });
         return result.join(this._stringFormatOptions === Enums_1.StringFormatOptions.SingleLine ? ", " : "\n");
     }
-    mapValue(stringValues) {
-        const result = Object.fromEntries(Object.keys(stringValues).map(key => [key, {}]));
-        for (const userAgentKey in stringValues) {
-            const directivesString = stringValues[userAgentKey];
-            const directiveValues = directivesString.split(",").map(userAgentValue => userAgentValue.trim());
-            directiveValues.forEach(directiveValue => {
-                const [key, value] = (0, Text_1.getDirectiveKeyValue)(directiveValue);
-                result[userAgentKey][key] = value;
-            });
-        }
-        return result;
-    }
-    mapStringValues(userAgentNames, userAgentValues) {
-        const stringValues = Object.fromEntries(userAgentNames.map(key => [key, ""]));
-        userAgentValues.forEach(userAgentValue => {
-            const separatorIndex = userAgentValue.indexOf(":");
-            const directiveOrUserAgentName = userAgentValue.substring(0, separatorIndex).trim();
-            const keyName = userAgentNames.some(userAgentName => userAgentName === directiveOrUserAgentName)
-                ? directiveOrUserAgentName
-                : "";
-            userAgentValue = keyName !== ""
-                ? userAgentValue.substring(separatorIndex + 1).trim()
-                : userAgentValue;
-            stringValues[keyName] = stringValues[keyName] !== ""
-                ? `${stringValues[keyName]}, ${userAgentValue}`
-                : userAgentValue;
-        });
-        if (this._duplicateKeyOptions !== Enums_1.DuplicateKeyOptions.None) {
-            for (const key in stringValues) {
-                stringValues[key] = this._duplicateKeyOptions === Enums_1.DuplicateKeyOptions.Last
-                    ? Array.from(new Set(stringValues[key].split(",").map(v => v.trim()).reverse())).reverse().join(", ")
-                    : Array.from(new Set(stringValues[key].split(",").map(v => v.trim()))).join(", ");
-            }
-        }
-        return stringValues;
-    }
     map(text) {
-        // Format text      
-        const formatedText = (0, Text_1.formatText)(text);
-        // Get user agents 
-        const userAgentNames = (0, Text_1.getUserAgentNames)(formatedText);
-        // Get user agent values(lines)
-        const userAgentValues = (0, Text_1.getUserAgentValues)(formatedText, userAgentNames);
-        // Create string dictionary(useragent key, string value)  
-        const stringValues = this.mapStringValues(userAgentNames, userAgentValues);
-        // Create result value 
-        const result = this.mapValue(stringValues);
+        const formatedText = text
+            .split("\n")
+            .map(v => v.replace(new RegExp(`${Constants_1.XRobotsTagHeaderName}(?:[^:]+)?:`, "g"), "").trim())
+            .map(xRobotsTagLine => xRobotsTagLine.trim().toLowerCase())
+            .filter(xRobotsTagLine => xRobotsTagLine !== "")
+            .join(",");
+        const userAgentNames = ["", ...Array.from(new Set(formatedText
+                .split(",")
+                .map(v => v.trim())
+                .map(v => v.split(":").map(v => v.trim())[0])
+                .filter(entity => !Object.keys(Enums_1.XRobotsTagKeys).some(key => entity.startsWith(key)))
+                .filter(userAgentName => userAgentName !== "")))
+        ];
+        const userAgentValues = userAgentNames.length === 1 ? [formatedText] : (0, Text_1.splitAt)(formatedText, userAgentNames);
+        const result = Object.fromEntries(userAgentNames.map(key => [key, {}]));
+        userAgentValues.forEach(userAgentValue => {
+            const xRobotsTagUserAgent = new XRobotsTagUserAgent(userAgentValue);
+            result[xRobotsTagUserAgent.key] = xRobotsTagUserAgent.key in result
+                ? this._duplicateKeyOptions === Enums_1.DuplicateKeyOptions.First
+                    ? { ...xRobotsTagUserAgent.value, ...result[xRobotsTagUserAgent.key] }
+                    : { ...result[xRobotsTagUserAgent.key], ...xRobotsTagUserAgent.value }
+                : { ...xRobotsTagUserAgent.value };
+        });
         return result;
     }
 }
 exports.XRobotsTag = XRobotsTag;
+class XRobotsTagUserAgent {
+    _key = "";
+    _value = {};
+    constructor(value) {
+        value = value.trim();
+        const startsWithUserAgent = !Object.keys(Enums_1.XRobotsTagKeys).some(directiveKey => value.startsWith(directiveKey));
+        if (startsWithUserAgent) {
+            const separatorIndex = value.indexOf(":");
+            this._key = value.substring(0, separatorIndex);
+            value = value.substring(separatorIndex + 1);
+        }
+        this._value = this.map(value);
+    }
+    map(value) {
+        var result = {};
+        const directives = value.split(",").map(v => v.trim());
+        for (const directive of directives) {
+            const directiveSeparatorIndex = directive.indexOf(":");
+            const directiveKey = directiveSeparatorIndex > -1 ? directive.substring(0, directiveSeparatorIndex) : directive;
+            const directiveValue = directiveSeparatorIndex > -1 ? directive.substring(directiveSeparatorIndex + 1).trim() : "";
+            result[directiveKey] = directiveValue;
+        }
+        return result;
+    }
+    get key() { return this._key; }
+    get value() { return this._value; }
+    toString() {
+        let result = `${this._key === "" ? "" : `${this._key}: `}`;
+        result += Object.keys(this._value).map(directiveKey => {
+            return this._value[directiveKey] === ""
+                ? directiveKey
+                : `${directiveKey}: ${this._value[directiveKey]}`;
+        }).join(", ");
+        return result;
+    }
+}
+exports.XRobotsTagUserAgent = XRobotsTagUserAgent;

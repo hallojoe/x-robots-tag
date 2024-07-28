@@ -1,6 +1,6 @@
 {
   "name": "@casko/x-robots-tag",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "X-Robots-Tag header reader.",
   "main": "dist/index.js",
   "files": [

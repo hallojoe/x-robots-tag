@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.splitAt = exports.getDirectiveKeyValue = exports.getUserAgentValues = exports.getUserAgentNames = exports.formatText = void 0;
+exports.splitAt = exports.getUserAgentNames = exports.formatText = void 0;
 const Constants_1 = require("./Constants");
 const Enums_1 = require("./Enums");
 function formatText(text) {
@@ -21,19 +21,6 @@ function getUserAgentNames(formatedText) {
     return ["", ...userAgentNames];
 }
 exports.getUserAgentNames = getUserAgentNames;
-function getUserAgentValues(formatedText, userAgentNames) {
-    return userAgentNames.length === 1
-        ? [formatedText]
-        : splitAt(formatedText, userAgentNames);
-}
-exports.getUserAgentValues = getUserAgentValues;
-function getDirectiveKeyValue(directiveText) {
-    const separatorIndex = directiveText.indexOf(":");
-    const directiveKey = separatorIndex > -1 ? directiveText.substring(0, separatorIndex) : directiveText;
-    const directiveValue = separatorIndex > -1 ? directiveText.substring(separatorIndex + 1).trim() : "";
-    return [directiveKey, directiveValue];
-}
-exports.getDirectiveKeyValue = getDirectiveKeyValue;
 function splitAt(value, separators) {
     const splitExpression = new RegExp(`(?=${separators.filter(separator => separator !== "").join("|")})`, "g");
     const result = value
