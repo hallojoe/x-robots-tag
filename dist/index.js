@@ -27,9 +27,10 @@ class XRobotsTag {
     }
     map(text) {
         const formatedText = text
+            .toLowerCase()
             .split("\n")
-            .map(v => v.replace(new RegExp(`${Constants_1.XRobotsTagHeaderName}(?:[^:]+)?:`, "g"), "").trim())
-            .map(xRobotsTagLine => xRobotsTagLine.trim().toLowerCase())
+            .map(v => v.replace(new RegExp(`${Constants_1.XRobotsTagHeaderName.toLowerCase()}(?:[^:]+)?:`, "g"), "").trim())
+            .map(xRobotsTagLine => xRobotsTagLine.trim())
             .filter(xRobotsTagLine => xRobotsTagLine !== "")
             .join(",");
         const userAgentNames = ["", ...Array.from(new Set(formatedText

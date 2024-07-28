@@ -1,7 +1,5 @@
 export type XRobotsTagValue = {
-    [key: string]: {
-        [key: string]: string;
-    };
+    [key: string]: XRobotsTagUserAgentValue;
 };
 export type XRobotsTagUserAgentValue = {
     [key: string]: string;

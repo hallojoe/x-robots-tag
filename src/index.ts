@@ -47,12 +47,13 @@ export class XRobotsTag {
   private map(text: string): XRobotsTagValue {
 
     const formatedText = text
+      .toLowerCase()
       .split("\n")
-      .map(v => v.replace(new RegExp(`${XRobotsTagHeaderName}(?:[^:]+)?:`, "g"), "").trim())
-      .map(xRobotsTagLine => xRobotsTagLine.trim().toLowerCase())
+      .map(v => v.replace(new RegExp(`${XRobotsTagHeaderName.toLowerCase()}(?:[^:]+)?:`, "g"), "").trim())
+      .map(xRobotsTagLine => xRobotsTagLine.trim())
       .filter(xRobotsTagLine => xRobotsTagLine !== "")
       .join(",")
-   
+
     const userAgentNames = ["", ...Array.from(new Set(formatedText
       .split(",")
       .map(v => v.trim())

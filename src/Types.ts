@@ -1,4 +1,4 @@
 
-export type XRobotsTagValue = { [key: string]: { [key: string]: string } }
+export type XRobotsTagValue = { [key: string]: XRobotsTagUserAgentValue }
 
 export type XRobotsTagUserAgentValue = { [key: string]: string }
