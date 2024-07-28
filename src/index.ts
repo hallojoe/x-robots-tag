@@ -68,7 +68,7 @@ export class XRobotsTag {
           .split(new RegExp(`(?=${userAgentNames.filter(userAgentName => userAgentName !== "").join("|")})`, "g"))
           .map(matchValue => matchValue.split(",").filter(v => v.trim() !== "").join(", "))
     
-    const result: XRobotsTagValue = Object.fromEntries(userAgentNames.map(key => [key, { }]))
+    const result:XRobotsTagValue = Object.fromEntries(userAgentNames.map(key => [key, { }]))
       
     userAgentValues.forEach(userAgentValue => {
 
@@ -93,23 +93,30 @@ export class XRobotsTagUserAgent {
   private _key: string = ""
   private _value: XRobotsTagUserAgentValue = { }
 
-  constructor(value: string) {
+  constructor(value: string | XRobotsTagUserAgentValue) {
 
-    value = value.trim()
+    if(typeof value !== "string") {
+      
+      this._value = value
+    
+      return
+    }
 
-    const startsWithUserAgent = !Object.keys(XRobotsTagKeys).some(directiveKey => value.startsWith(directiveKey))
+    let stringValue = value.trim()
+
+    const startsWithUserAgent = !Object.keys(XRobotsTagKeys).some(directiveKey => stringValue.startsWith(directiveKey))
 
     if(startsWithUserAgent) {
 
       const separatorIndex = value.indexOf(":")
 
-      this._key = value.substring(0, separatorIndex)
+      this._key = stringValue.substring(0, separatorIndex)
 
-      value = value.substring(separatorIndex + 1)
+      stringValue = stringValue.substring(separatorIndex + 1)
       
     }
 
-    this._value = this.map(value)
+    this._value = this.map(stringValue)
 
   }
 

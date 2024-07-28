@@ -12,7 +12,7 @@ export declare class XRobotsTag {
 export declare class XRobotsTagUserAgent {
     private _key;
     private _value;
-    constructor(value: string);
+    constructor(value: string | XRobotsTagUserAgentValue);
     private map;
     get key(): string;
     get value(): XRobotsTagUserAgentValue;

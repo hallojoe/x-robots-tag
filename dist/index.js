@@ -62,14 +62,18 @@ class XRobotsTagUserAgent {
     _key = "";
     _value = {};
     constructor(value) {
-        value = value.trim();
-        const startsWithUserAgent = !Object.keys(Enums_1.XRobotsTagKeys).some(directiveKey => value.startsWith(directiveKey));
+        if (typeof value !== "string") {
+            this._value = value;
+            return;
+        }
+        let stringValue = value.trim();
+        const startsWithUserAgent = !Object.keys(Enums_1.XRobotsTagKeys).some(directiveKey => stringValue.startsWith(directiveKey));
         if (startsWithUserAgent) {
             const separatorIndex = value.indexOf(":");
-            this._key = value.substring(0, separatorIndex);
-            value = value.substring(separatorIndex + 1);
+            this._key = stringValue.substring(0, separatorIndex);
+            stringValue = stringValue.substring(separatorIndex + 1);
         }
-        this._value = this.map(value);
+        this._value = this.map(stringValue);
     }
     map(value) {
         var result = {};
