@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.XRobotsTagUserAgent = exports.XRobotsTag = void 0;
 const Constants_1 = require("./Constants");
 const Enums_1 = require("./Enums");
-const Text_1 = require("./Text");
 class XRobotsTag {
     _value = {};
     _duplicateKeyOptions = Enums_1.DuplicateKeyOptions.First;
@@ -40,7 +39,11 @@ class XRobotsTag {
                 .filter(entity => !Object.keys(Enums_1.XRobotsTagKeys).some(key => entity.startsWith(key)))
                 .filter(userAgentName => userAgentName !== "")))
         ];
-        const userAgentValues = userAgentNames.length === 1 ? [formatedText] : (0, Text_1.splitAt)(formatedText, userAgentNames);
+        const userAgentValues = userAgentNames.length === 1
+            ? [formatedText]
+            : formatedText
+                .split(new RegExp(`(?=${userAgentNames.filter(userAgentName => userAgentName !== "").join("|")})`, "g"))
+                .map(matchValue => matchValue.split(",").filter(v => v.trim() !== "").join(", "));
         const result = Object.fromEntries(userAgentNames.map(key => [key, {}]));
         userAgentValues.forEach(userAgentValue => {
             const xRobotsTagUserAgent = new XRobotsTagUserAgent(userAgentValue);
