@@ -1,9 +1,9 @@
 {
   "name": "@casko/x-robots-tag",
-  "version": "0.0.1",
-  "description": "X-Robots-Tag reader.",
-  "main": "index.js",
-  "files": ["index.js", "index.d.ts"],
+  "version": "0.0.2",
+  "description": "X-Robots-Tag header reader.",
+  "main": "dist/index.js",
+  "files": ["dist/*.js", "dist/*.d.ts"],
   "scripts": {
     "build": "tsc",
     "test": "jest"
