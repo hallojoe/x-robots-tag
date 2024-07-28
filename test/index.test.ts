@@ -68,7 +68,6 @@ X-Robots-Tag: googlebot: noindex
 
 })
 
-
 describe.each([
   {
     name: "XRobotsTagUserAgent without user agent",

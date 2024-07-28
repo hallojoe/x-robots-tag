@@ -1,6 +1,5 @@
 import { XRobotsTagHeaderName } from "./Constants"
 import { DuplicateKeyOptions, StringFormatOptions, XRobotsTagKeys } from "./Enums"
-import { formatText, getUserAgentNames, splitAt } from "./Text"
 import { XRobotsTagUserAgentValue, XRobotsTagValue } from "./Types"
 
 export class XRobotsTag {
@@ -62,7 +61,11 @@ export class XRobotsTag {
       .filter(userAgentName => userAgentName !== "")))
     ]
 
-    const userAgentValues = userAgentNames.length === 1 ? [formatedText] : splitAt(formatedText, userAgentNames)
+    const userAgentValues = userAgentNames.length === 1 
+      ? [ formatedText ] 
+      : formatedText
+          .split(new RegExp(`(?=${userAgentNames.filter(userAgentName => userAgentName !== "").join("|")})`, "g"))
+          .map(matchValue => matchValue.split(",").filter(v => v.trim() !== "").join(", "))
     
     const result: XRobotsTagValue = Object.fromEntries(userAgentNames.map(key => [key, { }]))
       
@@ -114,9 +117,11 @@ export class XRobotsTagUserAgent {
     var result:XRobotsTagUserAgentValue = { }
 
     const directives = value.split(",").map(v => v.trim())
+ 
     for(const directive of directives) {
 
       const directiveSeparatorIndex = directive.indexOf(":")
+
       const directiveKey = directiveSeparatorIndex > -1 ? directive.substring(0, directiveSeparatorIndex) : directive
       const directiveValue = directiveSeparatorIndex > -1 ? directive.substring(directiveSeparatorIndex + 1).trim() : ""
 
@@ -125,7 +130,7 @@ export class XRobotsTagUserAgent {
     }
 
     return result
-
+ 
   }
 
   public get key():string { return this._key }
